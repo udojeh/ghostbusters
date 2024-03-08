@@ -41,7 +41,12 @@ def normalize(self):
     {}
     """
     "*** YOUR CODE HERE ***"
-    raiseNotDefined()
+    
+    total_value = self.total()
+
+    if total_value != 0:
+        for key in self.keys():
+            self[key] /= total_value
 
 def sample(self):
     """
@@ -65,15 +70,43 @@ def sample(self):
     0.0
     """
     "*** YOUR CODE HERE ***"
-    raiseNotDefined()
 
+    random_value = random.random() # Generates a random float between 0 and 1
+    cumulative_probability = 0 # Tracks cumulative probability as keys are iterated through
+    for key, value in self.items():
+        cumulative_probability += value # Add keys probability to the cumulative probability
+        if random_value <= cumulative_probability: 
+            return key   # Returns the key where the cumulative probability first becomes greater than or equal to the random value
+    """
+    Keys with higher weights have a greater chance of being selected.
+    In the example (shell?) shown above denoted by the >>>'s, 100 000 samples are generated using 'dist'
+    round(samples.count('key') * 1.0/N, 1) counts how many times 'key' appears in the samples
+        Then divides it by the total number of samples, showing it to one decimal place
+        The distribution 'dist' above is supposed to be normalized
+    For example, if the random value is 0.6, key 'b' will be returned, as 0.2 + 0.4 = 0.6
+        If random_value = 0.8, key 'c' will be returned
+        'd' will never be returned.
+    """
+        
 
 def getObservationProb(self, noisyDistance, pacmanPosition, ghostPosition, jailPosition):
     """
     Return the probability P(noisyDistance | pacmanPosition, ghostPosition).
     """
     "*** YOUR CODE HERE ***"
-    raiseNotDefined()
+    # Special case: ghost is in jail
+    if ghostPosition == jailPosition:
+        return 1.0 if noisyDistance is None else 0.0
+
+    # Calculates True Distance
+    trueDistance = util.manhattanDistance(pacmanPosition, ghostPosition)
+
+    # Use the provided observation probability function
+    if noisyDistance is not None:
+        observationProbability = busters.getObservationProbability(noisyDistance, trueDistance)
+        return observationProbability
+    else:
+        return 0.0
 
 
 
