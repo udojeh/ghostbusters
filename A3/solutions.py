@@ -170,4 +170,33 @@ def elapseTime(self, gameState):
     current position is known.
     """
     "*** YOUR CODE HERE ***"
-    raiseNotDefined()
+    
+    '''
+    On the discussion board, JasperLim asked if we were able to import 
+    DiscreteDistribution into solutions for q4 to make a copy of beliefs
+    (https://discourse.caslab.queensu.ca/t/a3-q4-discretedistribution/4439), 
+    and Zwee responded, stating that self.beliefs.copy() could be used to 
+    create a copy of self.beliefs. We were unsure if this was specifically 
+    stating an easier way to copy beliefs, or if importing the 
+    DiscreteDistribution class or the inference file as a whole into solutions
+    was not allowed for this assignment. 
+    Resultantly, to initialize an empty DiscreteDistribution object
+    to store updatedBeliefs in for this question, we made a copy of 
+    self.beliefs, then cleared it to essentially create a new belief 
+    distribution to store updated beliefs. 
+    Instead of using: updatedBeliefs = DiscreteDistribution() or
+    updatedBeliefs = inference.DiscreteDistribution()
+    '''
+    updatedBeliefs = self.beliefs.copy()
+    updatedBeliefs.clear()
+
+    # Iterates over all possible old ghost positions
+    for oldPos in self.allPositions:
+        newPosDist = self.getPositionDistribution(gameState, oldPos) # Obtains the distribution over new positions for the ghost, given its previous position
+        # Updates the belief distribution for each new position
+        for newPos, prob in newPosDist.items():
+            # Multiply the probability of the ghost being in the old position with the probability of the ghost being in the new position
+            updatedBeliefs[newPos] += self.beliefs[oldPos] * prob
+
+    self.beliefs = updatedBeliefs
+    self.beliefs.normalize()
