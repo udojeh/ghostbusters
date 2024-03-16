@@ -157,7 +157,6 @@ def observeUpdate(self, observation, gameState):
         
     self.beliefs = beliefUpdates
     self.beliefs.normalize()
-    self.beliefs.normalize()
 
 
 def elapseTime(self, gameState):
