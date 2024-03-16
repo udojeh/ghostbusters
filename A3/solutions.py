@@ -101,7 +101,7 @@ def getObservationProb(self, noisyDistance, pacmanPosition, ghostPosition, jailP
     # Calculates True Distance
     trueDistance = util.manhattanDistance(pacmanPosition, ghostPosition)
 
-    # Use the provided observation probability function
+    # Returns P(noisyDistance | trueDistance) using the provided function in busters.py
     if noisyDistance is not None:
         observationProbability = busters.getObservationProbability(noisyDistance, trueDistance)
         return observationProbability
