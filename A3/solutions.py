@@ -151,7 +151,6 @@ def observeUpdate(self, observation, gameState):
             belief = (obsGhostProb * ghostProb) / obsProb
         
 
-        #self.beliefs[position] = belief
         beliefUpdates[position] = belief
 
         
