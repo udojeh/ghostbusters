@@ -126,7 +126,37 @@ def observeUpdate(self, observation, gameState):
     position is known.
     """
     "*** YOUR CODE HERE ***"
-    raiseNotDefined()
+    beliefUpdates = self.beliefs.copy()
+    for position in self.allPositions:
+        # Edge cases if the ghost is in jail
+        if observation is None and position == self.getJailPosition():
+            belief = 1
+        elif observation is None and position != self.getJailPosition():
+            belief = 0
+        else: # Bayes' Rule
+            # P(the current observation | Ghost is at position)
+            obsGhostProb = self.getObservationProb(observation, gameState.getPacmanPosition(), position, self.getJailPosition())
+
+            # P(Ghost is at position). We use the posterior from the previous belief AKA the prior
+            ghostProb = self.beliefs[position]
+
+            # P(the current observation). Breaks into P(obs|ghost is at x)P(Ghost is at x) + P(obs|ghost is NOT at x)P(Ghost is NOT at x)
+            # P(the current observation) = the summation of P(obs|ghost is at p)P(Ghost is at p) where p is every position - probability that we see this observation given/if ghost is at P
+            obsProb = 0
+            for p in self.allPositions:
+                tempGhostProb = self.beliefs[p] # Prior of p
+                obsProb += self.getObservationProb(observation, gameState.getPacmanPosition(), p, self.getJailPosition()) * tempGhostProb
+            
+            # Updated belief is P(Ghost is at position | the current observation), we find using Bayes' Rule
+            belief = (obsGhostProb * ghostProb) / obsProb
+        
+
+        #self.beliefs[position] = belief
+        beliefUpdates[position] = belief
+
+        
+    self.beliefs = beliefUpdates
+    self.beliefs.normalize()
     self.beliefs.normalize()
 
 
